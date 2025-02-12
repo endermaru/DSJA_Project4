@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
+import { pretendard } from "@/lib/fonts";
 
 type Node = d3.SimulationNodeDatum & {
     id: string;
@@ -24,7 +25,7 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ nodes, edges }) => {
     useEffect(() => {
         if (!nodes || !edges) return;
 
-        const width = 800, height = 500;
+        const width = 800, height = 900;
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
 
@@ -40,16 +41,16 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ nodes, edges }) => {
             .range(["#d1e0ff", "#075eb5"]);
 
         const simulation = d3.forceSimulation<Node>(nodes)
-            .force("link", d3.forceLink<Node, Edge>(edges).id(d => d.id).distance(50))
-            .force("charge", d3.forceManyBody().strength(-80))
+            .force("link", d3.forceLink<Node, Edge>(edges).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-300))
             .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("x", d3.forceX().strength(0.1).x(width / 2))
-            .force("y", d3.forceY().strength(0.1).y(height / 2))
+            .force("x", d3.forceX().strength(0.05).x(width / 2))
+            .force("y", d3.forceY().strength(0.05).y(height / 2))
             .alphaDecay(0.05);
 
         const minWeight = d3.min(edges, (d:Edge) => d.weight) || 1;
         const maxWeight = d3.max(edges, (d:Edge) => d.weight) || 5;
-        const strokeScale = d3.scaleLinear().domain([minWeight, maxWeight]).range([1, 7]);
+        const strokeScale = d3.scaleLinear().domain([minWeight, maxWeight]).range([2, 12]);
 
         const link = svg.append("g")
             .selectAll("line")
@@ -59,9 +60,9 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ nodes, edges }) => {
             .attr("stroke-opacity", 0.6)
             .attr("stroke-width", (d:Edge) => strokeScale(d.weight));
 
-        const minSize = d3.min(nodes, (d:Node) => d.size) || 10;
-        const maxSize = d3.max(nodes, (d:Node) => d.size) || 20;
-        const radiusScale = d3.scaleLinear().domain([minSize, maxSize]).range([10, 20]);
+        const minSize = d3.min(nodes, (d:Node) => d.size) || 20;
+        const maxSize = d3.max(nodes, (d:Node) => d.size) || 40;
+        const radiusScale = d3.scaleLinear().domain([minSize, maxSize]).range([15, 40]);
 
         const node = svg.append("g")
             .selectAll("circle")
@@ -76,14 +77,15 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ nodes, edges }) => {
             .data(nodes)
             .enter().append("text")
             .attr("dx", 0)
-            .attr("dy", 3)
+            .attr("dy", 5)
             .text((d:Node) => d.id)
             .style("fill", "black")
-            .style("font-size", "11px")
+            .style("font-size", "16px")
             .style("font-weight", "bold")
             .style("text-anchor", "middle")
             .style("pointer-events", "none")
-            .style("user-select", "none");
+            .style("user-select", "none")
+            .style("font-family", "Pretendard, sans-serif");
 
         simulation.on("tick", () => {
             link.attr("x1", (d:Edge) => (d.source as Node).x || 0)
@@ -117,7 +119,7 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ nodes, edges }) => {
         }
     }, [nodes, edges]);
 
-    return <svg ref={svgRef} width={800} height={500}></svg>;
+    return <svg ref={svgRef} width={900} height={900}></svg>;
 };
 
 export default NetworkGraph;
