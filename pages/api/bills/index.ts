@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await connectToDatabase();
 
     // 쿼리에서 keyword, code, page, limit 가져오기
-    const { keyword, code, page = "1", limit = "10", sort = "desc" } = req.query;
+    const { keyword, councilName, page = "1", limit = "10", sort = "desc" } = req.query;
 
     // 검색 조건 생성
     const query: any = {};
@@ -24,8 +24,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       query["의안 제목"] = { $regex: keyword, $options: "i" };
     }
 
-    if (code && typeof code === "string") {
-      query["의회 코드"] = code;
+    if (councilName && typeof councilName === "string") {
+      if (councilName === "전국") {
+        // 전국이면 모든 데이터를 가져옴 (query 필터 없음)
+      } else if (councilName.includes("전체")) {
+        // "전체"가 포함된 경우 앞부분만 따서 포함된 모든 의회를 검색
+        const baseName = councilName.replace(/전체( 의회)?$/, "").trim();
+        query["의회"] = { $regex: `^${baseName}`, $options: "i" }; // 시작이 baseName인 모든 의회 포함
+      } else {
+        // 특정 의회명과 정확히 일치하는 경우
+        query["의회"] = councilName;
+      }
     }
 
     // 페이지네이션 설정

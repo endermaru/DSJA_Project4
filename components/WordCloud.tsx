@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import cloud from "d3-cloud";
 import { pretendard } from "@/lib/fonts";
@@ -6,10 +6,6 @@ import { pretendard } from "@/lib/fonts";
 interface Word {
   text: string;
   value: number;
-}
-
-interface WordCloudProps {
-  words: Word[];
 }
 
 interface WordCloudDatum {
@@ -21,8 +17,38 @@ interface WordCloudDatum {
   rotate?: number;
 }
 
-const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
+interface WordCloudProps {
+  code: string;
+}
+
+const WordCloud: React.FC<WordCloudProps> = ({ code }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const [words, setWords] = useState<Word[]>([]);
+
+  useEffect(() => {
+    if (!code) return;
+
+    fetch(`/api/wordclouds/${code}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.wordclouds && data.wordclouds.length > 0) {
+          const firstWordCloud = data.wordclouds[0]["freq"];
+          const rawValues = Object.values(firstWordCloud).map(v => Number(v)) as number[];
+          
+          const sizeScale = d3.scaleLinear()
+            .domain([Math.min(...rawValues), Math.max(...rawValues)])
+            .range([20, 100]);
+    
+          const formattedWords = Object.keys(firstWordCloud).map(key => ({
+            text: key,
+            value: sizeScale(firstWordCloud[key])
+          }));
+    
+          setWords(formattedWords);
+        }
+      })
+      .catch((err) => console.error("Failed to load word cloud data", err));
+  }, [code]);
 
   useEffect(() => {
     if (!words.length) return;
@@ -31,7 +57,8 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
     const height = 800;
 
     const layout = cloud<WordCloudDatum>()
-      .size([width, height]).spiral('archimedean')
+      .size([width, height])
+      .spiral("archimedean")
       .words(words.slice(0, 100).map(d => ({ text: d.text, size: d.value, freq: d.value })))
       .padding(5)
       .rotate(() => (Math.random() > 0.4 ? 0 : 90))
@@ -56,7 +83,8 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
         .append("text")
         .style("font-size", (d: WordCloudDatum) => `${d.size}px`)
         .style("fill", () => d3.schemeCategory10[Math.floor(Math.random() * 10)])
-        .style("font-family", "Pretendard, sans-serif").style("font-weight", "800")
+        .style("font-family", "Pretendard, sans-serif")
+        .style("font-weight", "800")
         .attr("text-anchor", "middle")
         .attr("transform", (d: WordCloudDatum) => `translate(${d.x ?? 0}, ${d.y ?? 0}) rotate(${d.rotate ?? 0})`)
         .text((d: WordCloudDatum) => d.text)
@@ -71,7 +99,20 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
     }
   }, [words]);
 
-  return <svg ref={svgRef} width={1000} height={800} className={pretendard.variable}></svg>;
+  return (
+    <div className="w-full h-full">
+      <svg
+        ref={svgRef}
+        className={`${pretendard.variable} bg-transparent`}
+        viewBox="0 0 1000 800"
+        preserveAspectRatio="xMidYMid meet"
+        width="100%"
+        height="auto"
+        style={{ background: "none" }}
+      ></svg>
+    </div>
+  );
+  
 };
 
 export default WordCloud;
