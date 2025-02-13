@@ -4,6 +4,7 @@ import NetworkGraph from "@/components/NetworkGraph";
 import WordCloud from '@/components/WordCloud';
 import { getCouncilName } from "@/lib/getCouncilName";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import KeywordFreq from "@/components/keywordsFreq";
 
 export default function Home() {
   const [councilCode, setCouncilCode] = useState<string>('000ALL');
@@ -82,6 +83,9 @@ export default function Home() {
               소제목 2
             </h2>
             <p className="mb-4">다른 본문 내용이 들어갑니다...</p>
+          </section>
+          <section>
+            <KeywordFreq/>
           </section>
         </div>
 
