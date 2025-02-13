@@ -38,7 +38,7 @@ export default function CouncilSelector({ onCouncilChange }: { onCouncilChange: 
 
   return (
     <Card className="p-3 w-full">
-      <div className="flex flex-col  gap-4">
+      <div className="flex flex-col gap-4">
         {/* 첫 번째 선택지: 광역시/도 선택 */}
         <Select onValueChange={handleRegionChange}>
           <SelectTrigger className="w-full">

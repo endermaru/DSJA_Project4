@@ -40,7 +40,7 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ code }) => {
         if (!graphData) return;
     
         const { nodes, edges } = graphData;
-        const width = 800, height = 900;
+        const width = 1000, height = 850;
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
     
@@ -137,17 +137,18 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ code }) => {
     
 
     return (
-        <div className="w-full h-full">
+        <div className="w-full h-full flex items-center justify-center overflow-hidden">
           <svg
             ref={svgRef}
             className={`${pretendard.variable} bg-transparent`}
-            viewBox="0 0 900 900"
+            viewBox="0 0 1000 850"
             preserveAspectRatio="xMidYMid meet"
             width="100%"
-            height="auto"
+            height="100%"
           ></svg>
         </div>
       );
+      
       
 };
 

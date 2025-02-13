@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,6 +29,8 @@ const BillList: React.FC<BillListProps> = ({ initialKeyword = "", councilName, p
   const [totalBills, setTotalBills] = useState(0);
   const [currentPage, setCurrentPage] = useState(page);
   const [visiblePages, setVisiblePages] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+  const listRef = useRef<HTMLDivElement>(null); // 리스트 컨테이너 참조
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -68,13 +70,15 @@ const BillList: React.FC<BillListProps> = ({ initialKeyword = "", councilName, p
     const startPage = Math.floor((newPage - 1) / 10) * 10 + 1;
     setVisiblePages(Array.from({ length: 10 }, (_, i) => startPage + i).filter(p => p <= totalPages));
     setCurrentPage(newPage);
+    listRef.current?.scrollIntoView({ block: "start" });
+
   };
 
   return (
-    <div className={`${pretendard.variable}`}> 
-      <Card className="mb-4 w-full mx-auto">
+    <div className={`${pretendard.variable} h-full flex flex-col`}> 
+      <Card ref={listRef} className="mb-4 w-full mx-auto h-full flex flex-col">
         <h2 className="text-xl py-2 font-semibold mb-2 text-center">의안 검색 - {councilName}</h2>
-        <div className="flex gap-2 px-5">
+        <div className="flex gap-2 px-5 bg-white">
           <Input
             type="text"
             placeholder="검색어를 입력하세요..."
@@ -85,20 +89,20 @@ const BillList: React.FC<BillListProps> = ({ initialKeyword = "", councilName, p
           />
           <Button onClick={handleSearch}>검색</Button>
         </div>
-        <CardContent className="py-3">
+        <CardContent className="py-3 flex flex-col flex-grow bg-white">
           <p className="text-gray-600 py-2">총 {totalBills}개 의안, {totalPages} 페이지</p>
           {error ? (
             <p className="text-red-500">{error}</p>
           ) : (
-            <div className="overflow-auto max-h-[500px] border rounded-lg"> 
+            <div className="flex-grow overflow-auto border rounded-lg bg-white"> 
                 <table className="w-full table-fixed border-collapse border border-gray-300 mx-auto">
                   <thead>
                     <tr className="bg-gray-100">
-                      <th className="border p-2 w-2/5 truncate">의안 제목</th>  {/* 40% 고정 */}
-                      <th className="border p-2 w-1/5 truncate">의회</th>  {/* 20% 고정 */}
-                      <th className="border p-2 w-1/5 truncate">의안 제안일</th>  {/* 20% 고정 */}
-                      <th className="border p-2 w-1/5 truncate">의안 종류</th>  {/* 20% 고정 */}
-                      <th className="border p-2 w-1/5 truncate">키워드</th>  {/* 20% 고정 */}
+                      <th className="border p-2 w-2/5 truncate">의안 제목</th>
+                      <th className="border p-2 w-1/5 truncate">의회</th>
+                      <th className="border p-2 w-1/5 truncate">의안 제안일</th>
+                      <th className="border p-2 w-1/5 truncate">의안 종류</th>
+                      <th className="border p-2 w-1/5 truncate">키워드</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -116,24 +120,24 @@ const BillList: React.FC<BillListProps> = ({ initialKeyword = "", councilName, p
             </div>
           )}
           {totalPages > 0 && (
-            <div className="mt-1 pt-1 flex flex-wrap justify-center gap-2 w-full">
+            <div className="mt-1 pt-1 flex flex justify-center gap-1 w-full">
               {/* 이전 버튼 */}
               <Button 
                 onClick={() => updateVisiblePages(Math.max(1, Math.floor((currentPage - 1) / 10) * 10))} 
-                className="w-[40px] h-[40px] text-sm flex items-center justify-center"
+                className="flex-grow text-sm flex items-center justify-center"
                 disabled={currentPage <= 10}
               >
                 이전
               </Button>
-
-              {/* 페이지 버튼 (항상 10개 유지, 없는 페이지는 비활성화) */}
+  
+              {/* 페이지 버튼 */}
               {visiblePages
-                .filter(pageNum => pageNum > 0 && pageNum <= totalPages) // NaN 방지 및 유효한 페이지만 표시
+                .filter(pageNum => pageNum > 0 && pageNum <= totalPages)
                 .map((pageNum) => (
                   <Button 
                     key={pageNum} 
                     onClick={() => updateVisiblePages(pageNum)} 
-                    className={`w-[40px] h-[40px] text-sm flex items-center justify-center 
+                    className={`flex-grow text-sm flex items-center justify-center 
                                 ${pageNum === currentPage ? "bg-blue-500 text-white" : "text-white bg-black"} 
                                 ${pageNum > totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
                     disabled={pageNum > totalPages}
@@ -141,11 +145,11 @@ const BillList: React.FC<BillListProps> = ({ initialKeyword = "", councilName, p
                     {pageNum}
                   </Button>
                 ))}
-
+  
               {/* 다음 버튼 */}
               <Button 
                 onClick={() => updateVisiblePages(Math.min(totalPages, Math.ceil(currentPage / 10) * 10 + 1))} 
-                className="w-[40px] h-[40px] text-sm flex items-center justify-center"
+                className="flex-grow text-sm flex items-center justify-center"
                 disabled={visiblePages[0] + 10 > totalPages}
               >
                 다음
@@ -156,6 +160,7 @@ const BillList: React.FC<BillListProps> = ({ initialKeyword = "", councilName, p
       </Card>
     </div>
   );
+  
 };
 
 export default BillList;
