@@ -61,7 +61,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={pretendard.variable + " flex flex-col max-w-7xl mx-auto bg-[#d2d0cc]"}>
+    <div className={pretendard.variable + " w-full max-w-[100vw] flex flex-col bg-[#d2d0cc]"}>
       <div className="flex">
         {/* 왼쪽 콘텐츠 영역 */}
         <div className="w-1/2 pr-4">
