@@ -43,17 +43,17 @@ export default function KeywordFreq() {
   ];
 
   return (
-    <div className="overflow-x-auto p-3">
-      <h1 className="text-2xl font-bold mb-4">키워드 빈도 테이블</h1>
+    <div className="overflow-x-auto px-3 pb-4">
+      <h1 className="text-xl font-bold mb-4">빈도수 상위 30개 키워드</h1>
       <div className="grid grid-cols-3 gap-2">
         {tableData.map((data, idx) => (
           <div key={idx} className="border rounded-lg shadow">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="text-sm text-center">순위</TableHead>
-                  <TableHead className="text-sm text-center">키워드</TableHead>
-                  <TableHead className="text-sm text-center">빈도(회)</TableHead>
+                <TableRow className="bg-[#132133]">
+                  <TableHead className="text-sm text-center text-white">순위</TableHead>
+                  <TableHead className="text-sm text-center text-white">키워드</TableHead>
+                  <TableHead className="text-sm text-center text-white">빈도(회)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
