@@ -90,12 +90,13 @@ export default function Home() {
               </figcaption>
             </figure>
             <p className="mt-6 mb-6 text-xl">부산광역시 사하구 의회를 보면 ‘정비’가 가장 두드러졌다. ‘정비’가 포함된 의안은 주로 재개발사업 정비계획에 관한 의안 제목이 많았다. 부산은 사하구뿐만 아니라 동래구, 부산진구, 수영구 등에서 ‘정비’ 키워드가 두드러지게 나타났으며 역시 재개발 관련 의안이 주를 이루었다. 부산시는 별도의 정비사업 통합홈페이지를 운영할 정도로 재개발 및 정비사업이 활발하게 이루어지고 있기 때문에 이러한 특징이 워드 클라우드로 반영된 것으로 보인다.</p>
-            <figure className="flex flex-col items-center">
+            <figure className="flex mb-6 flex-col items-center">
               <WordCloud code="051011"/>
               <figcaption className="mt-2 text-gray-600 text-center text-md">
                 부산광역시 사하구 의회 워드클라우드
               </figcaption>
             </figure>
+            <BillListNoSearch initialKeyword="정비" councilName="부산광역시 사하구 의회"/>
           </section>
 
           <section className="pl-10 pr-20 pb-[100px]">
@@ -112,21 +113,21 @@ export default function Home() {
             <figure className="flex flex-col items-center">
               <NetworkGraph code="061021"/>
               <figcaption className="mt-2 text-gray-600 text-center text-md">
-                전라남도 함평군 의회 네트워크 그래프
+                전라남도 함평군 의회 네트워크 그래프(상호작용이 가능합니다)
               </figcaption>
             </figure>
             <p className="mt-6 mb-6 text-xl">같은 전라남도에 위치한 장흥군 의회 역시 후쿠시마 원전 오염수 방류 관련 키워드를 확인할 수 있었다. 한편, 쌀 과잉 공급으로 인한 가격 폭락 등을 짐작할 수 있는 키워드도 존재했다.</p>
             <figure className="flex flex-col items-center">
               <NetworkGraph code="061019"/>
               <figcaption className="mt-2 text-gray-600 text-center text-md">
-                전라남도 장흥군 의회 네트워크 그래프
+                전라남도 장흥군 의회 네트워크 그래프(상호작용이 가능합니다)
               </figcaption>
             </figure>
             <p className="mt-6 mb-6 text-xl">서울시 도봉구 의회의 네트워크 그래프에서는 수도권 광역급행철도인 GTX-C 관련 키워드를 확인할 수 있었다. 관련 의안이 발의된 것은 착공 전인 2022년으로, 노선 중 도봉에 있는 창동역 구간을 지하노선으로 추진할 것을 결의하는 내용이었다. 이후 2023년 5월, 창동역 구간이 지하화로 결론 내려졌다. 결의안의 목표대로 진행된 것이다.</p>
             <figure className="flex flex-col items-center">
               <NetworkGraph code="002011"/>
               <figcaption className="mt-2 text-gray-600 text-center text-md">
-                서울특별시 도봉구 의회 네트워크 그래프
+                서울특별시 도봉구 의회 네트워크 그래프(상호작용이 가능합니다)
               </figcaption>
             </figure>
             <p className="mt-6 mb-6 text-xl">도봉구 의회는 서울에 위치한 지방의회에는 다소 어색할 수 있는 ‘일본’, ‘노역’, ‘군함’ 등의 키워드가 나타나기도 하였는데, 도봉구 의회가 가결한 의안 중 ‘일본’이라는 키워드로 검색한 결과, 도봉구 의회는 독도 영유권, 후쿠시마 오염수, 군함도와 사도광산 유네스코 지정 등의 이슈에 결의안을 다수 의결한 것을 볼 수 있었다.</p>
@@ -143,14 +144,20 @@ export default function Home() {
             <p className="mt-6 mb-6 text-xl">무엇보다 키워드의 빈도수를 기반으로 한 분석의 유효성은 확실하지 않다. 단순히 관련 의안을 많이 발의했다고 그 의제가 중요한 것은 아니기 때문이다. 그렇기에 본 기사의 시각화는 참고용으로 이용하고, 이를  기반으로 빈도수뿐만 아니라 관련 사업, 정책에 투입되는 인력, 예산, 기간 등을 다각적으로 고려하여 분석해야할 것이다.</p>
             <p className="mt-6 mb-6 text-xl">전국에는 총 243개의 지방의회가 존재하기 때문에 지금까지 소개한 시각화는 그 일부에 지나지 않는다. 거주하는 지역이나 관심 있는 지역의 의안을 직접 확인하고 시각화를 볼 수 있도록 별도의 시각화 페이지를 준비해두었기 때문에 더 많은 유용한 정보와 분석이 기대된다.</p>
           </section>
-          <div className="flex justify-center mt-6 mb-10">
-          <Button 
-            className="bg-[#132133] text-xl p-6" 
-            onClick={() => router.push("/visualizationPage")}
-          >
-            상세 시각화 페이지로 바로 이동하기
-          </Button>
-        </div>
+          <div className="flex flex-col justify-center items-center mt-6 mb-10">
+            <Button 
+              className="bg-[#132133] text-xl p-6 mb-5" 
+              onClick={() => router.push("/visualizationPage")}
+            >
+              상세 시각화 페이지로 이동하기
+            </Button>
+            <Button 
+              className="bg-[#132133] text-xl p-6" 
+              onClick={() => window.open("https://github.com/endermaru/DSJA_Project4", "쏘쓰")}
+            >
+              소스 코드 페이지로 이동하기
+            </Button>
+          </div>
 
         </div>
 
